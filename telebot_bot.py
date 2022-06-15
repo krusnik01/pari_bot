@@ -49,17 +49,6 @@ def new_pari(message):
         bot.send_message(message.chat.id,'Сначала нужно зарегистрироваться!' ,parse_mode='html')
 
 
-
-
-
-
-
-
-
-
-
-
-
 #читаем файл
 def read_from_file(chat_id):
     open_file = open(f'{chat_id}', 'a+')
