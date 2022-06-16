@@ -3,6 +3,11 @@ import telebot
 #Bot_id
 bot = telebot.TeleBot('5406422363:AAE77P3ZW-Jg3MRelYigygP_5LUfFNXVrQA')
 
+start_spor=False
+activ_members=0
+mnenie={}
+stat_mem=0
+
 #добавляем участника
 @bot.message_handler(commands=['add_player'])
 def add_player(message):
@@ -16,7 +21,7 @@ def add_player(message):
     write_from_file(members,message.chat.id)
 
 #удаляем участника
-@bot.message_handler(commands=[' '])
+@bot.message_handler(commands=['remove_player'])
 def remove_player(message):
     members = read_from_file(message.chat.id)
     members.pop(message.from_user.username,[True])
@@ -39,14 +44,27 @@ def show_stat(message):
 #Добавить пари
 @bot.message_handler(commands=['add_pari'])
 def new_pari(message):
+    global start_spor,activ_members,mnenie,start_spor
     members = read_from_file(message.chat.id)
     if message.from_user.username in members:
         bot.send_message(message.chat.id, 'И о чём ты хочешь поспорить?', parse_mode='html')
-        @bot.message_handler(content_types='text')
-        def handle_text(message):
-            bot.send_message(message.chat.id, f'Вы написали: {message.text}')
+        start_spor=True                                 #спор начат
+        activ_members=len(members)                      #кол-во спорщиков
+        mnenie=members.copy()                           #список спорщиков
+        start_spor=message.from_user.username           #зачинщик спора
     else:
         bot.send_message(message.chat.id,'Сначала нужно зарегистрироваться!' ,parse_mode='html')
+
+
+
+@bot.message_handler(content_types='text')
+def handle_text(message):
+    if (start_spor==True): #спор запущен?
+        if activ_members>0: #кто не высказался?
+            print('1')
+
+        bot.send_message(message.chat.id, f'Вы написали: {message.text}')
+
 
 
 #читаем файл
